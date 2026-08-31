@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Drum Trainer</string>
+
+    <!-- Common -->
+    <string name="back">Back</string>
+    <string name="start">Start</string>
+    <string name="pause">Pause</string>
+    <string name="reset">Reset</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+
+    <!-- Training -->
+    <string name="bpm_label">BPM</string>
+    <string name="complete_training">Finish Today\'s Training</string>
+    <string name="saving">Saving…</string>
+    <string name="saved_success">Training saved 🥁</string>
+    <string name="save_failed">Save failed, please retry</string>
+
+    <!-- Template list -->
+    <string name="template_list_title">Training Groups</string>
+    <string name="new_template">New Group</string>
+    <string name="template_name_hint">Group name</string>
+    <string name="start_training">Start Training</string>
+    <string name="history">History</string>
+    <string name="empty_template_list">No training groups yet. Tap ＋ to create one.</string>
+    <string name="delete_template_confirm">Delete this group and all its projects?</string>
+
+    <!-- Template edit -->
+    <string name="empty_project_list">No projects yet. Tap ＋ to add one.</string>
+    <string name="add_project">Add Project</string>
+    <string name="project_title_hint">Project title, e.g. Stage 1: Warm-up</string>
+    <string name="project_content_hint">Practice content / notation</string>
+    <string name="needs_bpm">Record BPM</string>
+
+    <!-- History -->
+    <string name="history_title">History</string>
+    <string name="empty_history_hint">No training records yet. Complete a session to see it here.</string>
+    <string name="not_recorded">—</string>
+</resources>

@@ -1,0 +1,4 @@
+<resources>
+    <!-- Compose 应用只需一个空壳主题承接 Activity；真正的主题在 ui/theme 中定义 -->
+    <style name="Theme.DrumTrainer" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
