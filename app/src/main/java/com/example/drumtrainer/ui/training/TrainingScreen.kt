@@ -41,16 +41,20 @@ fun TrainingScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // 在 Composable 上下文中先解析文案，供下方协程体使用
+    val savedSuccessMessage = stringResource(R.string.saved_success)
+    val saveFailedMessage = stringResource(R.string.save_failed)
+
     // 提交结果提示
     LaunchedEffect(uiState.submitState) {
         when (uiState.submitState) {
             SubmitState.Success -> {
-                snackbarHostState.showSnackbar(stringResource(R.string.saved_success))
+                snackbarHostState.showSnackbar(savedSuccessMessage)
                 viewModel.consumeSubmitResult()
             }
 
             SubmitState.Error -> {
-                snackbarHostState.showSnackbar(stringResource(R.string.save_failed))
+                snackbarHostState.showSnackbar(saveFailedMessage)
                 viewModel.consumeSubmitResult()
             }
 
