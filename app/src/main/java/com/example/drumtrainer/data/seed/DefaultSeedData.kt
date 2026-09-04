@@ -3,7 +3,7 @@ package com.example.drumtrainer.data.seed
 /**
  * 预置训练数据结构。
  */
-internal data class DefaultProject(
+data class DefaultProject(
     val title: String,
     val content: String,
     val needsBpm: Boolean,
