@@ -1,8 +1,8 @@
 name: Build APK
 
 on:
+  # 仅 tag 推送触发构建，避免开发期 main 推送产生重复构建
   push:
-    branches: [main]
     tags: ["v*"]
   pull_request:
     branches: [main]
