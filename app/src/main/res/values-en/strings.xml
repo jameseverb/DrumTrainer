@@ -24,7 +24,8 @@
     <string name="new_template">New Group</string>
     <string name="template_name_hint">Group name</string>
     <string name="start_training">Start Training</string>
-    <string name="history">History</string>
+    <string name="history">Records</string>
+    <string name="theme_menu">Color Theme</string>
     <string name="empty_template_list">No training groups yet. Tap ＋ to create one.</string>
     <string name="delete_template_confirm">Delete this group and all its projects?</string>
 
@@ -35,8 +36,22 @@
     <string name="project_content_hint">Practice content / notation</string>
     <string name="needs_bpm">Record BPM</string>
 
-    <!-- History -->
-    <string name="history_title">History</string>
+    <!-- Records -->
+    <string name="history_title">Training Records</string>
     <string name="empty_history_hint">No training records yet. Complete a session to see it here.</string>
     <string name="not_recorded">—</string>
+    <string name="delete_session_confirm">Delete this training record? This cannot be undone.</string>
+
+    <!-- Last BPM -->
+    <string name="last_bpm">Last: %1$d BPM</string>
+
+    <!-- Theme -->
+    <string name="theme_dialog_title">Choose Color Theme</string>
+    <string name="default_template_name">Daily Basics</string>
+    <string name="theme_blue">Drum Blue</string>
+    <string name="theme_red">Beat Red</string>
+    <string name="theme_purple">Jazz Purple</string>
+    <string name="theme_green">Groove Green</string>
+    <string name="theme_orange">Rock Orange</string>
+    <string name="theme_teal">Cymbal Teal</string>
 </resources>

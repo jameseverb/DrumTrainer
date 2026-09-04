@@ -51,6 +51,14 @@ class TrainingRepository(
     fun observeSessionsWithRecords(): Flow<List<SessionWithRecords>> =
         sessionDao.observeSessionsWithRecords()
 
+    /** 删除一条训练记录（明细由外键级联删除） */
+    suspend fun deleteSession(session: TrainingSession) =
+        sessionDao.deleteSession(session.id)
+
+    /** 某项目最近一次记录的 BPM（无记录返回 null） */
+    suspend fun getLastBpm(projectId: Long): Int? =
+        sessionDao.getLastBpm(projectId)
+
     /** 提交一次训练：原子写入 session + 全部项目明细 */
     suspend fun submitSession(session: TrainingSession, records: List<ProjectRecord>): Long =
         sessionDao.insertSessionWithRecords(session, records)

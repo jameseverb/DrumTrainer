@@ -37,6 +37,25 @@ interface SessionDao {
     @Query("SELECT * FROM training_sessions ORDER BY finishedAt DESC")
     fun observeSessionsWithRecords(): Flow<List<SessionWithRecords>>
 
+    /** 删除一条训练记录（project_records 由外键 CASCADE 级联删除） */
+    @Query("DELETE FROM training_sessions WHERE id = :sessionId")
+    suspend fun deleteSession(sessionId: Long)
+
+    /**
+     * 查询某项目最近一次记录的 BPM（按训练完成时间倒序，跳过未记录 BPM 的记录）。
+     * 返回 null 表示该项目尚无任何 BPM 记录。
+     */
+    @Query(
+        """
+        SELECT pr.bpm FROM project_records pr
+        JOIN training_sessions ts ON pr.sessionId = ts.id
+        WHERE pr.projectId = :projectId AND pr.bpm IS NOT NULL
+        ORDER BY ts.finishedAt DESC
+        LIMIT 1
+        """
+    )
+    suspend fun getLastBpm(projectId: Long): Int?
+
     /** 单条训练的明细（备用） */
     @Query("SELECT * FROM project_records WHERE sessionId = :sessionId ORDER BY id ASC")
     fun observeRecords(sessionId: Long): Flow<List<ProjectRecord>>

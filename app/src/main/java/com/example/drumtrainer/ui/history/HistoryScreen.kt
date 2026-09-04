@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -21,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,6 +52,7 @@ fun HistoryScreen(
 ) {
     val sessions by viewModel.sessions.collectAsStateWithLifecycle()
     var expandedId by remember { mutableStateOf<Long?>(null) }
+    var pendingDelete by remember { mutableStateOf<SessionWithRecords?>(null) }
 
     Scaffold(
         topBar = {
@@ -91,10 +95,33 @@ fun HistoryScreen(
                         onToggle = {
                             expandedId = if (expandedId == item.session.id) null else item.session.id
                         },
+                        onDelete = { pendingDelete = item },
                     )
                 }
             }
         }
+    }
+
+    // 删除确认对话框（防误删）
+    pendingDelete?.let { item ->
+        AlertDialog(
+            onDismissRequest = { pendingDelete = null },
+            title = { Text(stringResource(R.string.delete)) },
+            text = { Text(stringResource(R.string.delete_session_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteSession(item.session)
+                    pendingDelete = null
+                }) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingDelete = null }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
     }
 }
 
@@ -103,6 +130,7 @@ private fun SessionCard(
     item: SessionWithRecords,
     expanded: Boolean,
     onToggle: () -> Unit,
+    onDelete: () -> Unit,
 ) {
     Card(
         modifier = Modifier
@@ -110,7 +138,10 @@ private fun SessionCard(
             .clickable(onClick = onToggle),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = item.session.templateName,
@@ -128,6 +159,13 @@ private fun SessionCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = FontFamily.Monospace,
                 )
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        Icons.Filled.Delete,
+                        contentDescription = stringResource(R.string.delete),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
 
             if (expanded) {

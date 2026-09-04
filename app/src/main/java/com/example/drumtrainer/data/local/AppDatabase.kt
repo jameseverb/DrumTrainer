@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.drumtrainer.data.local.dao.ProjectDao
 import com.example.drumtrainer.data.local.dao.SessionDao
 import com.example.drumtrainer.data.local.dao.TemplateDao
@@ -19,8 +21,7 @@ import com.example.drumtrainer.data.local.entity.TrainingTemplate
         TrainingSession::class,
         ProjectRecord::class,
     ],
-    version = 1,
-    // 生产环境建议改为 true，并配置 room.schemaLocation 以支持后续数据库迁移
+    version = 2,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -30,6 +31,13 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
 
     companion object {
+        /** v1 → v2：project_records 新增 projectId 列（可空，存量行为 NULL） */
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE project_records ADD COLUMN projectId INTEGER")
+            }
+        }
+
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
@@ -39,7 +47,10 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "drum_trainer.db",
-                ).build().also { INSTANCE = it }
+                )
+                    .addMigrations(MIGRATION_1_2)
+                    .build()
+                    .also { INSTANCE = it }
             }
     }
 }

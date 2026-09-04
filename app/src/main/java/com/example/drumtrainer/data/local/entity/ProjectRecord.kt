@@ -34,4 +34,6 @@ data class ProjectRecord(
     val durationMs: Long,
     /** 记录的 BPM；仅当项目 needsBpm=true 时才有值 */
     val bpm: Int? = null,
+    /** 关联的训练项目 id（v2 新增）。用于「显示上次 BPM」等跨记录查询；项目删除后仍保留旧值 */
+    val projectId: Long? = null,
 )

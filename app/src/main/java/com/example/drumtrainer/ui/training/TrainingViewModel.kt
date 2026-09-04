@@ -47,6 +47,8 @@ data class TrainingUiState(
     val runningProjectId: Long? = null,
     /** BPM 输入（字符串，key = projectId；提交时才转 Int?） */
     val bpmInputs: Map<Long, String> = emptyMap(),
+    /** 各项目上次训练记录的 BPM（key = projectId），无记录则缺席 */
+    val lastBpms: Map<Long, Int> = emptyMap(),
     val submitState: SubmitState = SubmitState.Idle,
 )
 
@@ -81,6 +83,8 @@ class TrainingViewModel(
             ) { template, projects -> template to projects }
                 .collect { (template, projects) ->
                     _uiState.update { it.copy(template = template, projects = projects) }
+                    // 项目集合变化时（首次进入 / 编辑后返回），加载各项目上次的 BPM
+                    maybeLoadLastBpms(projects)
                 }
         }
 
@@ -200,6 +204,7 @@ class TrainingViewModel(
                         content = p.content,
                         durationMs = duration,
                         bpm = bpm,
+                        projectId = p.id,
                     )
                 }
 
@@ -225,6 +230,34 @@ class TrainingViewModel(
     }
 
     // ---------- 内部 ----------
+
+    /** 上次已加载过 BPM 的项目集合，避免 Flow 重复发射时反复查询数据库 */
+    private var loadedBpmProjectIds: Set<Long> = emptySet()
+
+    /**
+     * 加载各项目上次的 BPM 并预填到输入框（不覆盖用户已输入的值）。
+     * 仅在项目集合发生变化时执行。
+     */
+    private suspend fun maybeLoadLastBpms(projects: List<TrainingProject>) {
+        val currentIds = projects.map { it.id }.toSet()
+        if (currentIds == loadedBpmProjectIds) return
+        loadedBpmProjectIds = currentIds
+
+        val last = buildMap {
+            projects.filter { it.needsBpm }.forEach { p ->
+                repository.getLastBpm(p.id)?.let { put(p.id, it) }
+            }
+        }
+        _uiState.update { s ->
+            // 预填：仅填空白输入框，不覆盖用户已输入的内容
+            val prefilled = last.mapValues { it.value.toString() }
+                .filterKeys { it !in s.bpmInputs }
+            s.copy(
+                lastBpms = last,
+                bpmInputs = s.bpmInputs + prefilled,
+            )
+        }
+    }
 
     /** 把原始 TimerState 折算成当前耗时并写入 state */
     private fun recomputeElapsed() {

@@ -1,5 +1,7 @@
 package com.example.drumtrainer.ui.template
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,19 +10,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,16 +37,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.drumtrainer.DrumTrainerApp
 import com.example.drumtrainer.R
 import com.example.drumtrainer.data.local.entity.TrainingTemplate
+import com.example.drumtrainer.ui.theme.ThemeOption
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +66,14 @@ fun TemplateListScreen(
     var showCreateDialog by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf<TrainingTemplate?>(null) }
 
+    // 主题设置：直接读写全局 DataStore，切换后立即生效
+    val app = LocalContext.current.applicationContext as DrumTrainerApp
+    val scope = rememberCoroutineScope()
+    val themeOption by app.container.themeSettings.themeFlow
+        .collectAsStateWithLifecycle(initialValue = ThemeOption.DEFAULT)
+    var showThemeMenu by remember { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -59,6 +81,21 @@ fun TemplateListScreen(
                 actions = {
                     TextButton(onClick = onOpenHistory) {
                         Text(stringResource(R.string.history))
+                    }
+                    IconButton(onClick = { showThemeMenu = true }) {
+                        Icon(Icons.Filled.MoreVert, contentDescription = null)
+                    }
+                    DropdownMenu(
+                        expanded = showThemeMenu,
+                        onDismissRequest = { showThemeMenu = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.theme_menu)) },
+                            onClick = {
+                                showThemeMenu = false
+                                showThemeDialog = true
+                            },
+                        )
                     }
                 },
             )
@@ -133,6 +170,65 @@ fun TemplateListScreen(
             },
         )
     }
+
+    if (showThemeDialog) {
+        ThemePickerDialog(
+            current = themeOption,
+            onSelect = { option ->
+                scope.launch { app.container.themeSettings.setTheme(option) }
+                showThemeDialog = false
+            },
+            onDismiss = { showThemeDialog = false },
+        )
+    }
+}
+
+/** 主题选择对话框：色块 + 名称 + 单选，选中立即生效并关闭 */
+@Composable
+private fun ThemePickerDialog(
+    current: ThemeOption,
+    onSelect: (ThemeOption) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.theme_dialog_title)) },
+        text = {
+            Column {
+                ThemeOption.entries.forEach { option ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = { onSelect(option) }),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = option == current,
+                            onClick = { onSelect(option) },
+                        )
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .size(16.dp)
+                                .clip(CircleShape)
+                                .background(option.primary),
+                        )
+                        Text(
+                            text = stringResource(option.labelRes),
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = 8.dp),
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        },
+    )
 }
 
 @Composable

@@ -90,6 +90,7 @@ fun TrainingScreen(
                     elapsedMs = uiState.projectElapsedMs[project.id] ?: 0L,
                     isRunning = uiState.runningProjectId == project.id,
                     bpmText = uiState.bpmInputs[project.id].orEmpty(),
+                    lastBpm = uiState.lastBpms[project.id],
                     onToggleTimer = { viewModel.toggleProjectTimer(project.id) },
                     onResetTimer = { viewModel.resetProjectTimer(project.id) },
                     onBpmChange = { viewModel.setBpm(project.id, it) },

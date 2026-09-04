@@ -6,27 +6,28 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val LightColors = lightColorScheme(
-    primary = Primary,
-    secondary = Secondary,
-    background = BackgroundLight,
-    surface = SurfaceLight,
-)
-
-private val DarkColors = darkColorScheme(
-    primary = Primary,
-    secondary = Secondary,
-    background = BackgroundDark,
-    surface = SurfaceDark,
-)
-
 @Composable
 fun DrumTrainerTheme(
+    themeOption: ThemeOption = ThemeOption.DEFAULT,
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
+    val lightColors = lightColorScheme(
+        primary = themeOption.primary,
+        secondary = themeOption.secondary,
+        background = BackgroundLight,
+        surface = SurfaceLight,
+    )
+
+    val darkColors = darkColorScheme(
+        primary = themeOption.primary,
+        secondary = themeOption.secondary,
+        background = BackgroundDark,
+        surface = SurfaceDark,
+    )
+
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        colorScheme = if (darkTheme) darkColors else lightColors,
         typography = Typography,
         content = content,
     )

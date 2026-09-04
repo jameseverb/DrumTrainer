@@ -24,7 +24,8 @@
     <string name="new_template">新建训练组</string>
     <string name="template_name_hint">训练组名称</string>
     <string name="start_training">开始训练</string>
-    <string name="history">历史</string>
+    <string name="history">记录</string>
+    <string name="theme_menu">颜色主题</string>
     <string name="empty_template_list">还没有训练组，点击右下角 ＋ 新建一个吧</string>
     <string name="delete_template_confirm">确定删除该训练组及其所有项目？</string>
 
@@ -35,8 +36,22 @@
     <string name="project_content_hint">练习内容 / 字谱</string>
     <string name="needs_bpm">需要记录 BPM</string>
 
-    <!-- 历史 -->
-    <string name="history_title">历史记录</string>
+    <!-- 记录 -->
+    <string name="history_title">训练记录</string>
     <string name="empty_history_hint">还没有训练记录，完成一次训练后会显示在这里</string>
     <string name="not_recorded">未记录</string>
+    <string name="delete_session_confirm">确定删除这条训练记录？删除后无法恢复。</string>
+
+    <!-- 上次 BPM -->
+    <string name="last_bpm">上次 %1$d BPM</string>
+
+    <!-- 主题 -->
+    <string name="theme_dialog_title">选择颜色主题</string>
+    <string name="default_template_name">每日基础训练</string>
+    <string name="theme_blue">鼓皮蓝</string>
+    <string name="theme_red">鼓点红</string>
+    <string name="theme_purple">爵士紫</string>
+    <string name="theme_green">律动绿</string>
+    <string name="theme_orange">摇滚橙</string>
+    <string name="theme_teal">青镲绿</string>
 </resources>

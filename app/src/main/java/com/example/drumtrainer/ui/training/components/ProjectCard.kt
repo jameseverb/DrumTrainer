@@ -29,7 +29,7 @@ import com.example.drumtrainer.data.local.entity.TrainingProject
 import com.example.drumtrainer.util.formatDuration
 
 /**
- * 单个项目卡片：标题 + 醒目字谱 + 独立正计时器（开始/暂停/重置）+ BPM 输入框。
+ * 单个项目卡片：标题 + 醒目字谱 + 独立正计时器（开始/暂停/重置）+ BPM 输入框（附上次 BPM 提示）。
  */
 @Composable
 fun ProjectCard(
@@ -37,6 +37,7 @@ fun ProjectCard(
     elapsedMs: Long,
     isRunning: Boolean,
     bpmText: String,
+    lastBpm: Int?,
     onToggleTimer: () -> Unit,
     onResetTimer: () -> Unit,
     onBpmChange: (String) -> Unit,
@@ -110,10 +111,16 @@ fun ProjectCard(
                     Text(stringResource(R.string.reset))
                 }
                 if (project.needsBpm) {
+                    val lastBpmValue = lastBpm
                     OutlinedTextField(
                         value = bpmText,
                         onValueChange = onBpmChange,
                         label = { Text(stringResource(R.string.bpm_label)) },
+                        supportingText = if (lastBpmValue != null) {
+                            { Text(stringResource(R.string.last_bpm, lastBpmValue)) }
+                        } else {
+                            null
+                        },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.width(104.dp),
