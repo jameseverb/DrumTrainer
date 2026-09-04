@@ -54,6 +54,7 @@ fun TemplateEditScreen(
 
     var showEditor by remember { mutableStateOf(false) }
     var editingProject by remember { mutableStateOf<TrainingProject?>(null) }
+    var pendingDelete by remember { mutableStateOf<TrainingProject?>(null) }
 
     Scaffold(
         topBar = {
@@ -104,7 +105,7 @@ fun TemplateEditScreen(
                             editingProject = project
                             showEditor = true
                         },
-                        onDelete = { viewModel.deleteProject(project) },
+                        onDelete = { pendingDelete = project },
                     )
                 }
             }
@@ -124,6 +125,28 @@ fun TemplateEditScreen(
                 showEditor = false
             },
             onDismiss = { showEditor = false },
+        )
+    }
+
+    // 项目删除确认（防误删）
+    pendingDelete?.let { project ->
+        AlertDialog(
+            onDismissRequest = { pendingDelete = null },
+            title = { Text(stringResource(R.string.delete)) },
+            text = { Text(stringResource(R.string.delete_project_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteProject(project)
+                    pendingDelete = null
+                }) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingDelete = null }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
         )
     }
 }

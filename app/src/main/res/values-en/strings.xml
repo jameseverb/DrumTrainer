@@ -28,6 +28,7 @@
     <string name="theme_menu">Color Theme</string>
     <string name="empty_template_list">No training groups yet. Tap ＋ to create one.</string>
     <string name="delete_template_confirm">Delete this group and all its projects?</string>
+    <string name="delete_project_confirm">Delete this project?</string>
 
     <!-- Template edit -->
     <string name="empty_project_list">No projects yet. Tap ＋ to add one.</string>

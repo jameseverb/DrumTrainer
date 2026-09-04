@@ -28,6 +28,7 @@
     <string name="theme_menu">颜色主题</string>
     <string name="empty_template_list">还没有训练组，点击右下角 ＋ 新建一个吧</string>
     <string name="delete_template_confirm">确定删除该训练组及其所有项目？</string>
+    <string name="delete_project_confirm">确定删除该项目？</string>
 
     <!-- 模版编辑 -->
     <string name="empty_project_list">还没有项目，点击右下角 ＋ 开始编排</string>
