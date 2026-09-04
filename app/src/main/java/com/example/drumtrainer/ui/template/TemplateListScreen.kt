@@ -211,7 +211,7 @@ private fun ThemePickerDialog(
                                 .padding(start = 4.dp)
                                 .size(16.dp)
                                 .clip(CircleShape)
-                                .background(option.primary),
+                                .background(option.light.primary),
                         )
                         Text(
                             text = stringResource(option.labelRes),
